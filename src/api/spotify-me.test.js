@@ -16,7 +16,7 @@ describe("spotify-me API", () => {
     test("returns error if no token is provided", async () => {
       const result = await fetchAccountProfile("");
       expect(result).toEqual({
-        error: "No access token found.",
+        error: "No accss token found.",
         profile: null,
       });
     });
