@@ -67,7 +67,7 @@ export default function PlaylistsPage() {
       <h1 id="playlists-title" className="playlists-title page-title">Your Playlists</h1>
 
       {/* Affiche la limite puis le total réel */}
-      <h2 className="playlists-count">{limit} of {total ?? playlists.length} Playlists</h2>
+      <h2 className="playlists-count">{displayedCount} of {total ?? playlists.length} Playlists</h2>
 
       {loading && <output className="playlists-loading" data-testid="loading-indicator">Loading playlists…</output>}
       {error && !loading && <div className="playlists-error" role="alert">{error}</div>}
