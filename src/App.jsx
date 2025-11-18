@@ -22,8 +22,8 @@ const router = createBrowserRouter([
       { path: 'top-tracks', element: <TopTracksPage /> },
       { path: 'top-artists', element: <TopArtistsPage /> },
       { path: 'playlists', element: <PlaylistsPage /> },
-      { path: '*', element: <NotFoundPage /> },
-      { path: '/playlist/:id', element: <PlaylistDetailPage /> }
+      { path: '/playlist/:id', element: <PlaylistDetailPage /> },
+      { path: '*', element: <NotFoundPage /> }
     ]
   }
 ]);
