@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { fetchPlaylistById } from "../../api/spotify-playlists";
 import { handleTokenError } from "../../utils/handleTokenError.js";
 import TrackItem from "../../components/TrackItem/TrackItem.jsx";
+import './PlaylistDetailPage.css';
 
 export default function PlaylistDetailPage() {
   const { id } = useParams();

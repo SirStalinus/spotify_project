@@ -1,0 +1,394 @@
+/* ...existing code... */
+/* Palette légère inspirée Spotify, compatible avec le style global de l'app */
+:root{
+  --bg-left: #1db954; /* spotify green */
+  --bg-right: #153d2a; /* moins sombre que précédemment */
+  --card: #ffffff;
+  --card-text: #111218;
+  --muted: #6f767b;
+  --text: #e6e6e6;
+  --accent: #1db954;
+  --glass: rgba(255,255,255,0.03);
+  --radius: 10px;
+  --card-width: min(980px, 92%);
+  --card-min-height: 220px;
+}
+
+/* page container: green on the left, slightly darker right */
+.playlist-detail-page{
+  background: linear-gradient(90deg, var(--bg-left) 0%, var(--bg-right) 60%); /* atténué */
+  color: var(--text);
+  padding: 32px 24px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+/* small id line at top used in tests */
+.playlist-detail-page > div:first-child{
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  align-self: center;
+}
+
+/* shared card styles — ensures all cards are centered and have the same width/visual */
+.playlist-header,
+.playlist-tracks{
+  width: var(--card-width);
+  min-width: 320px;
+  min-height: var(--card-min-height);
+  margin: 0 auto;
+  background: var(--card);
+  color: var(--card-text);
+  padding: 18px;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 22px rgba(3,6,10,0.45);
+  box-sizing: border-box;
+}
+
+/* header with cover and meta */
+.playlist-header{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+/* cover image */
+.playlist-header img{
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.03));
+  flex-shrink: 0;
+}
+
+/* meta column */
+.playlist-meta{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* title / subtitle */
+.playlist-meta h1{
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--card-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.playlist-meta h2{
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* link to Spotify */
+.playlist-meta a{
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 120ms ease, transform 120ms ease;
+}
+.playlist-meta a:hover{
+  background: rgba(29,185,84,0.08);
+  transform: translateY(-1px);
+}
+
+/* override tracks container: transparent so only items appear as cards */
+.playlist-tracks{
+  background: transparent;
+  padding-top: 12px;
+  padding-bottom: 16px;
+  margin-top: 8px;
+  box-shadow: none;
+}
+
+/* list layout — ensure all track "cards" have the same size */
+.playlist-tracks ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+/* each track is a white card with fixed minimum height for consistency */
+.playlist-tracks li{
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--card-text);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px; /* même taille pour toutes les cartes */
+  min-width: 95%;
+  box-shadow: 0 6px 18px rgba(3,6,10,0.12);
+}
+
+/* responsive: si besoin augmenter la hauteur sur petits écrans */
+@media (max-width: 720px){
+  .playlist-tracks li{
+    min-height: 72px;
+  }
+}
+
+/* "No tracks found" fallback */
+.playlist-tracks li:empty,
+.playlist-tracks li:only-child{
+  color: var(--muted);
+}
+
+/* loading and error visuals: they remain visible over the green background */
+[role="status"][data-testid="loading-indicator"]{
+  margin: 12px 0;
+  background: rgba(255,255,255,0.06);
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-block;
+}
+[role="alert"]{
+  margin: 12px 0;
+  color: #b00020;
+  background: rgba(176,0,32,0.06);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+/* responsive: stack header on small screens and keep cards full-width */
+@media (max-width: 720px){
+  .playlist-header{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .playlist-header img{
+    width: 140px;
+    height: 140px;
+  }
+  .playlist-header,
+  .playlist-tracks{
+    width: calc(100% - 32px);
+    min-height: auto;
+  }
+}
+
+/* small utility tweaks to integrate with existing list styles */
+.playlist-item-cover{ /* if reused from ListItem styles */
+  border-radius: 6px;
+}
+```// filepath: c:\Users\mmonicho\git_td\spotify_project\spotify_project\src\pages\PlaylistDetailPage\PlaylistDetailPage.css
+/* ...existing code... */
+/* Palette légère inspirée Spotify, compatible avec le style global de l'app */
+:root{
+  --bg-left: #1db954; /* spotify green */
+  --bg-right: #071014; /* darker right side */
+  --card: #ffffff;
+  --card-text: #111218;
+  --muted: #6f767b;
+  --text: #e6e6e6;
+  --accent: #1db954;
+  --glass: rgba(255,255,255,0.03);
+  --radius: 10px;
+  --card-width: min(980px, 92%);
+  --card-min-height: 220px;
+}
+
+/* page container: green on the left, darker on the right */
+.playlist-detail-page{
+  background: linear-gradient(90deg, var(--bg-left) 0%, var(--bg-right) 65%);
+  color: var(--text);
+  padding: 32px 24px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+/* small id line at top used in tests */
+.playlist-detail-page > div:first-child{
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  align-self: center;
+}
+
+/* shared card styles — ensures all cards are centered and have the same width/visual */
+.playlist-header,
+.playlist-tracks{
+  width: var(--card-width);
+  min-width: 320px;
+  min-height: var(--card-min-height);
+  margin: 0 auto;
+  background: var(--card);
+  color: var(--card-text);
+  padding: 18px;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 22px rgba(3,6,10,0.45);
+  box-sizing: border-box;
+}
+
+/* header with cover and meta */
+.playlist-header{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+/* cover image */
+.playlist-header img{
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.03));
+  flex-shrink: 0;
+}
+
+/* meta column */
+.playlist-meta{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* title / subtitle */
+.playlist-meta h1{
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--card-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.playlist-meta h2{
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* link to Spotify */
+.playlist-meta a{
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 120ms ease, transform 120ms ease;
+}
+.playlist-meta a:hover{
+  background: rgba(29,185,84,0.08);
+  transform: translateY(-1px);
+}
+
+/* tracks section (keeps same visual size/width as header) */
+.playlist-tracks{
+  padding-top: 12px;
+  padding-bottom: 16px;
+  margin-top: 8px;
+}
+
+/* tracks heading */
+.playlist-tracks h4{
+  margin: 0 0 12px 0;
+  color: var(--card-text);
+  font-size: 1rem;
+}
+
+/* list layout */
+.playlist-tracks ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.playlist-tracks li{
+  padding: 10px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), transparent);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--card-text);
+}
+
+/* "No tracks found" fallback */
+.playlist-tracks li:empty,
+.playlist-tracks li:only-child{
+  color: var(--muted);
+}
+
+/* loading and error visuals: they remain visible over the green background */
+[role="status"][data-testid="loading-indicator"]{
+  margin: 12px 0;
+  background: rgba(255,255,255,0.06);
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-block;
+}
+[role="alert"]{
+  margin: 12px 0;
+  color: #b00020;
+  background: rgba(176,0,32,0.06);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+/* responsive: stack header on small screens and keep cards full-width */
+@media (max-width: 720px){
+  .playlist-header{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .playlist-header img{
+    width: 140px;
+    height: 140px;
+  }
+  .playlist-header,
+  .playlist-tracks{
+    width: calc(100% - 32px);
+    min-height: auto;
+  }
+}
+
+/* small utility tweaks to integrate with existing list styles */
+.playlist-item-cover{ /* if reused from ListItem styles */
+  border-radius: 6px;
+}
