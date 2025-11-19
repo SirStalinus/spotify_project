@@ -26,7 +26,10 @@ export default function PlaylistDetailPage() {
       localStorage.getItem("token");
 
     if (!token) {
-      setError("No access token available");
+      // Use setTimeout to defer the state update and avoid synchronous setState in effect
+      setTimeout(() => {
+        setError("No access token available");
+      }, 0);
       return;
     }
 
