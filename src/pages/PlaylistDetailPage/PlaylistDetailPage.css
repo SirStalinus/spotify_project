@@ -280,10 +280,6 @@
   .playlist-tracks ul{ gap: 10px; padding-bottom: 12px; }
 }
 
-/* Small utilities */
-.playlist-meta p{ margin: 0; }
-```/* filepath: c:\Users\mmonicho\git_td\spotify_project\spotify_project\src\pages\PlaylistDetailPage\PlaylistDetailPage.css */
-/* Modern Spotify-inspired layout: green gradient background, centered white cards */
 
 /* Palette & sizing */
 :root{
