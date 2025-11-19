@@ -71,4 +71,23 @@ describe('TopArtistItem component', () => {
         // uncomment to debug
         //screen.debug();
     });
+
+    test('index starts at 1 when passed index 0', () => {
+        const artist = {
+            id: 'artist3',
+            name: 'Index Artist',
+            images: [{ url: 'idx.jpg' }],
+            genres: [],
+            followers: { total: 0 },
+            external_urls: { spotify: 'https://open.spotify.com/artist/artist3' }
+        };
+        render(<TopArtistItem artist={artist} index={0} />);
+
+        const listItem = screen.getByTestId(`top-artist-item-${artist.id}`);
+        expect(listItem).toBeInTheDocument();
+
+        // expect the displayed index to be "1" (index prop is 0 -> displayed as 1)
+        const indexNode = within(listItem).getByText(/\b1\b/);
+        expect(indexNode).toBeInTheDocument();
+    });
 });
