@@ -7,17 +7,9 @@ import './PlaylistDetailPage.css';
 
 export default function PlaylistDetailPage() {
   const { id } = useParams();
-
-  // récupérer le token une seule fois (hors de l'effet)
-  const token =
-    localStorage.getItem("access_token") ||
-    localStorage.getItem("spotify_access_token") ||
-    localStorage.getItem("token");
-
-  // initialiser error selon la présence du token (évite setState synchrone dans l'effet)
-  const [error, setError] = useState(token ? null : "No access token available");
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // set document title expected by tests
   useEffect(() => {
@@ -27,15 +19,19 @@ export default function PlaylistDetailPage() {
   useEffect(() => {
     if (!id) return;
 
-    // si pas de token, on ne lance pas la requête — l'erreur est déjà initialisée
+    // récupérer le token depuis le localStorage (adapter la clé si nécessaire)
+    const token =
+      localStorage.getItem("access_token") ||
+      localStorage.getItem("spotify_access_token") ||
+      localStorage.getItem("token");
+
     if (!token) {
+      setError("No access token available");
       return;
     }
 
-    Promise.resolve().then(() => {
-      setLoading(true);
-      setError(null);
-    });
+    setLoading(true);
+    setError(null);
 
     fetchPlaylistById(token, id)
       .then((res) => {
@@ -63,7 +59,7 @@ export default function PlaylistDetailPage() {
         setPlaylist(null);
       })
       .finally(() => setLoading(false));
-  }, [id, token]);
+  }, [id]);
 
   return (
     <div className="playlist-detail-page">
