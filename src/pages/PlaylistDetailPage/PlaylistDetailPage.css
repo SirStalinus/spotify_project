@@ -198,8 +198,7 @@
 .playlist-item-cover{ /* if reused from ListItem styles */
   border-radius: 6px;
 }
-```// filepath: c:\Users\mmonicho\git_td\spotify_project\spotify_project\src\pages\PlaylistDetailPage\PlaylistDetailPage.css
-/* ...existing code... */
+
 /* Palette légère inspirée Spotify, compatible avec le style global de l'app */
 :root{
   --bg-left: #1db954; /* spotify green */
