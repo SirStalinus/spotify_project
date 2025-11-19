@@ -63,7 +63,6 @@ export default function PlaylistDetailPage() {
 
   return (
     <div className="playlist-detail-page">
-      <div>Playlist ID: {id}</div>
 
       {loading && (
         <div role="status" data-testid="loading-indicator">
