@@ -16,9 +16,7 @@ export default function PlaylistDetailPage() {
     document.title = "Playlist | Spotify App";
   }, []);
 
-  useEffect(() => {
-    if (!id) return;
-
+  const loadPlaylist = async (playlistId) => {
     // récupérer le token depuis le localStorage (adapter la clé si nécessaire)
     const token =
       localStorage.getItem("access_token") ||
@@ -26,42 +24,44 @@ export default function PlaylistDetailPage() {
       localStorage.getItem("token");
 
     if (!token) {
-      // Use setTimeout to defer the state update and avoid synchronous setState in effect
-      setTimeout(() => {
-        setError("No access token available");
-      }, 0);
+      setError("No access token available");
       return;
     }
 
     setLoading(true);
     setError(null);
 
-    fetchPlaylistById(token, id)
-      .then((res) => {
-        if (res?.error) {
-          // handle token specific errors via helper (tests spy on this)
-          if (typeof handleTokenError === "function") {
-            handleTokenError(res.error, () => {
-              /* optional callback for redirect */
-            });
-          }
-          setError(res.error);
-          setPlaylist(null);
-        } else {
-          // accept both shapes: { data } or { playlist }
-          const pl = res?.data ?? res?.playlist ?? null;
-          setPlaylist(pl);
-          // afficher dans la console pour vérifier le format (ex : première piste)
-          console.log("Fetched playlist:", pl);
-          console.log("First track (if present):", pl?.tracks?.items?.[0]?.track);
+    try {
+      const res = await fetchPlaylistById(token, playlistId);
+      if (res?.error) {
+        // handle token specific errors via helper (tests spy on this)
+        if (typeof handleTokenError === "function") {
+          handleTokenError(res.error, () => {
+            /* optional callback for redirect */
+          });
         }
-      })
-      .catch((e) => {
-        console.error(e);
-        setError(e?.message ?? "Failed to fetch playlist.");
+        setError(res.error);
         setPlaylist(null);
-      })
-      .finally(() => setLoading(false));
+      } else {
+        // accept both shapes: { data } or { playlist }
+        const pl = res?.data ?? res?.playlist ?? null;
+        setPlaylist(pl);
+        // afficher dans la console pour vérifier le format (ex : première piste)
+        console.log("Fetched playlist:", pl);
+        console.log("First track (if present):", pl?.tracks?.items?.[0]?.track);
+      }
+    } catch (e) {
+      console.error(e);
+      setError(e?.message ?? "Failed to fetch playlist.");
+      setPlaylist(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!id) return;
+    loadPlaylist(id);
   }, [id]);
 
   return (
