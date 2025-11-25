@@ -30,20 +30,40 @@ const DashboardPage = () => {
         const fetchData = async () => {
             try {
                 setError(null);
-                const topArtists = await fetchUserTopArtists(token);
-                console.log('Top Artists:', topArtists);
-                if (topArtists && topArtists.items && topArtists.items.length > 0) {
-                    setTopArtist(topArtists.items[0]);
-                } else {
+
+                // top artists: API may return either raw Spotify object ({ items: [...] })
+                // or a wrapper { data: <spotify>, error: <msg> } depending on implementation.
+                const topArtistsResp = await fetchUserTopArtists(token);
+                console.log('Top Artists:', topArtistsResp);
+
+                // If API returned an error field, surface it
+                if (topArtistsResp && topArtistsResp.error) {
+                    setError(topArtistsResp.error);
                     setTopArtist(null);
+                } else {
+                    // prefer resp.items, otherwise resp.data.items
+                    const topArtistsData = (topArtistsResp && topArtistsResp.items) ? topArtistsResp : (topArtistsResp && topArtistsResp.data) ? topArtistsResp.data : null;
+                    if (topArtistsData && topArtistsData.items && topArtistsData.items.length > 0) {
+                        setTopArtist(topArtistsData.items[0]);
+                    } else {
+                        setTopArtist(null);
+                    }
                 }
 
-                const topTracks = await fetchUserTopTracks(token);
-                console.log('Top Tracks:', topTracks);
-                if (topTracks && topTracks.items && topTracks.items.length > 0) {
-                    setTopTrack(topTracks.items[0]);
-                } else {
+                // top tracks (same normalization)
+                const topTracksResp = await fetchUserTopTracks(token);
+                console.log('Top Tracks:', topTracksResp);
+
+                if (topTracksResp && topTracksResp.error) {
+                    setError(prev => prev ? prev + ' | ' + topTracksResp.error : topTracksResp.error);
                     setTopTrack(null);
+                } else {
+                    const topTracksData = (topTracksResp && topTracksResp.items) ? topTracksResp : (topTracksResp && topTracksResp.data) ? topTracksResp.data : null;
+                    if (topTracksData && topTracksData.items && topTracksData.items.length > 0) {
+                        setTopTrack(topTracksData.items[0]);
+                    } else {
+                        setTopTrack(null);
+                    }
                 }
 
                 setLoading(false);
@@ -76,6 +96,7 @@ const DashboardPage = () => {
                                 imageUrl={topArtist.images && topArtist.images.length > 0 ? topArtist.images[0].url : null}
                                 title={topArtist.name}
                                 subtitle={topArtist.genres ? topArtist.genres.join(', ') : 'Genres non disponibles'}
+                                link={topArtist.external_urls && topArtist.external_urls.spotify ? topArtist.external_urls.spotify : null}
                             />
                         </div>
                     </div>
@@ -94,7 +115,8 @@ const DashboardPage = () => {
                                 ? topTrack.album.images[0].url
                                 : null}
                             title={topTrack.name}
-                            subtitle={`${topTrack.artists.map(artist => artist.name).join(', ')}`}
+                            subtitle={topTrack.genres ? topTrack.genres.join(', ') : 'Genres non disponibles'}
+                            link={topTrack.external_urls && topTrack.external_urls.spotify ? topTrack.external_urls.spotify : null}
                         />
                     </div>
                 ) : (
