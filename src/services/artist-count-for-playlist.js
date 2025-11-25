@@ -1,12 +1,13 @@
 import { fetchPlaylistById } from '../api/spotify-playlists.js';
 
 /**
- * Count artist appearances for a given playlist.
+ * Count artist appearances for a given playlist and return top N artists.
  * @param {string} token - Spotify access token
  * @param {string} playlistId - Spotify playlist ID
- * @returns {Promise<Object>} - Map of artist name to number of appearances
+ * @param {number} [topN=5] - Number of top artists to return
+ * @returns {Promise<Array<{ Artist: string, 'Number of Tracks': number }>>} - Sorted array of top artists (suitable for console.table)
  */
-export async function artistCountForPlaylist(token, playlistId) {
+export async function artistCountForPlaylist(token, playlistId, topN = 5) {
   if (!token) throw new Error('No access token provided');
   if (!playlistId) throw new Error('No playlistId provided');
 
@@ -15,7 +16,7 @@ export async function artistCountForPlaylist(token, playlistId) {
     throw new Error(result.error);
   }
   const playlist = result.data;
-  if (!playlist) return {};
+  if (!playlist) return [];
 
   // Spotify playlist object contains tracks as a paged object at playlist.tracks
   // with .items array where each item has .track which contains artists array.
@@ -58,5 +59,11 @@ export async function artistCountForPlaylist(token, playlistId) {
     accumulateItems(playlist.items);
   }
 
-  return counts;
+  // Convert counts object to sorted array of { Artist, 'Number of Tracks' }
+  const sorted = Object.entries(counts)
+    .map(([artist, count]) => ({ Artist: artist, 'Number of Tracks': count }))
+    .sort((a, b) => b['Number of Tracks'] - a['Number of Tracks'] || a.Artist.localeCompare(b.Artist))
+    .slice(0, topN);
+
+  return sorted;
 }

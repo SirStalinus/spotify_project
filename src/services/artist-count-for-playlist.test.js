@@ -30,7 +30,10 @@ describe('artistCountForPlaylist', () => {
     fetchPlaylistById.mockResolvedValueOnce({ data: playlist, error: null });
 
     const result = await artistCountForPlaylist(token, playlistId);
-    expect(result).toEqual({ A: 2, B: 1 });
+    expect(result).toEqual([
+      { Artist: 'A', 'Number of Tracks': 2 },
+      { Artist: 'B', 'Number of Tracks': 1 },
+    ]);
     expect(fetchPlaylistById).toHaveBeenCalledWith(token, playlistId);
   });
 
@@ -59,7 +62,10 @@ describe('artistCountForPlaylist', () => {
     });
 
     const result = await artistCountForPlaylist(token, playlistId);
-    expect(result).toEqual({ A: 2, B: 1 });
+    expect(result).toEqual([
+      { Artist: 'A', 'Number of Tracks': 2 },
+      { Artist: 'B', 'Number of Tracks': 1 },
+    ]);
     expect(globalThis.fetch).toHaveBeenCalledWith('http://api/next', expect.any(Object));
   });
 
