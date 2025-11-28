@@ -1,5 +1,6 @@
 const { generateAccessToken } = require("./utils.cjs");
 const { fetchPlaylistById } = require("../src/api/spotify-playlists");
+const { artistCountForPlaylist } = require("../src/services/artist-count-for-playlist");
 
 /**
  * Main function to demonstrate fetching a Spotify playlist.
@@ -9,21 +10,21 @@ const main = async () => {
 
   const token = await generateAccessToken();
 
-  // fetch playlist by ID
-  fetchPlaylistById(token, playlistId)
-    .then(({ data }) => {
-      // extract track names and artist names
-      const tracks = data.tracks.items.map((item) => ({
-        trackName: item.track.name,
-        artistNames: item.track.artists.map((artist) => artist.name).join(", "),
-      }));
+  try {
+    // get playlist metadata (for display)
+    const playlistRes = await fetchPlaylistById(token, playlistId);
+    if (playlistRes.error) throw new Error(playlistRes.error);
+    const playlist = playlistRes.data;
 
-      console.log(`Playlist: ${data.name} by ${data.owner.display_name}`);
-      console.table(tracks);
-    })
-    .catch((error) => {
-      console.error("Error fetching playlist:", error);
-    });
+    // get top artists using the updated service
+    const topArtists = await artistCountForPlaylist(token, playlistId, 5);
+
+    console.log(`Playlist: ${playlist.name} by ${playlist.owner && playlist.owner.display_name ? playlist.owner.display_name : playlist.owner && playlist.owner.id}`);
+    console.log('Top 5 Artists:');
+    console.table(topArtists);
+  } catch (error) {
+    console.error('Error fetching playlist:', error);
+  }
 };
 
 main();

@@ -45,11 +45,16 @@ export default function TopArtistsPage() {
     fetchUserTopArtists(token, limit, timeRange)
       .then(res => {
         if (res.error) {
-          if (!handleTokenError(res.error, navigate)) {
-            setError(res.error);
+          // If token error triggers redirect, stop here
+          if (handleTokenError(res.error, navigate)) {
+            return;
           }
+          // otherwise surface the error and do not attempt to read res.data
+          setError(res.error);
+          return;
         }
-        setArtists(res.data.items);
+        // safe read of data
+        setArtists((res && res.data && Array.isArray(res.data.items)) ? res.data.items : []);
       })
       .catch(err => { setError(err.message); })
       .finally(() => { setLoading(false); });
