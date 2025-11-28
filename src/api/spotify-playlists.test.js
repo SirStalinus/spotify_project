@@ -61,5 +61,46 @@ describe("spotify-playlists API", () => {
         data: null,
       });
     });
+  describe("fetchPlaylistById network and nonexistent playlist cases", () => {
+    test("returns error if network is down (fetch rejects with TypeError)", async () => {
+      globalThis.fetch = jest.fn().mockRejectedValue(new TypeError("Network is down"));
+
+      const result = await fetchPlaylistById("valid_token", "playlist123");
+      expect(result).toEqual({
+        error: "Failed to fetch playlist.",
+        data: null,
+      });
+    });
+
+    test("returns error when Spotify returns 404 with error message for nonexistent playlist", async () => {
+      globalThis.fetch = jest.fn().mockResolvedValue({
+        status: 404,
+        json: jest.fn().mockResolvedValue({ error: { message: "Playlist not found" } }),
+      });
+
+      const result = await fetchPlaylistById("valid_token", "nonexistent");
+      expect(globalThis.fetch).toHaveBeenCalledWith(
+        `${SPOTIFY_API_BASE}/playlists/nonexistent`,
+        {
+          headers: { Authorization: "Bearer valid_token" },
+        }
+      );
+      expect(result).toEqual({
+        error: "Playlist not found",
+        data: null,
+      });
+    });
+
+    test("returns error when response.json throws (invalid JSON)", async () => {
+      globalThis.fetch = jest.fn().mockResolvedValue({
+        json: jest.fn().mockRejectedValue(new Error("Invalid JSON")),
+      });
+
+      const result = await fetchPlaylistById("valid_token", "playlist123");
+      expect(result).toEqual({
+        error: "Failed to fetch playlist.",
+        data: null,
+      });
+    });
   });
-});
+})});
