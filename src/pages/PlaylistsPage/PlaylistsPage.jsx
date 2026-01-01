@@ -28,9 +28,6 @@ export default function PlaylistsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // total number of playlists available on the account
-  const [total, setTotal] = useState(null);
-
   // require token to fetch playlists
   const { token } = useRequireToken();
 
@@ -47,26 +44,17 @@ export default function PlaylistsPage() {
           if (!handleTokenError(res.error, navigate)) {
             setError(res.error);
           }
-        } else {
-            // store total count if provided by API, fallback to items length
-            setTotal(res.data?.total ?? res.data?.items?.length ?? null);
-            // ensure we only display up to the requested limit
-            const items = res.data?.items ?? [];
-            setPlaylists(items.slice(0, limit));
         }
-      }
-      )
+        setPlaylists(res.data.items);
+      })
       .catch(err => { setError(err.message); })
       .finally(() => { setLoading(false); });
   }, [token, navigate]);
 
-  // number of playlists that should be displayed according to the limit (but not more than total)
-  const displayedCount = Math.min(limit, total ?? playlists.length);
-
   return (
     <section className="playlists-container page-container" aria-labelledby="playlists-title">
       <h1 id="playlists-title" className="playlists-title page-title">Your Playlists</h1>
-      <h2 className="playlists-count">{displayedCount} of {total ?? playlists.length} Playlists</h2>
+      <h2 className="playlists-count">{limit} Playlists</h2>
       {loading && <output className="playlists-loading" data-testid="loading-indicator">Loading playlists…</output>}
       {error && !loading && <div className="playlists-error" role="alert">{error}</div>}
       {!loading && !error && (
